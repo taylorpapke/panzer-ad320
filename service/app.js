@@ -34,12 +34,27 @@ app.get('/', (req, res) => {
 })
 
 const cardsByDeck = async (req, res) => {
-  const cards = await Deck.findById(req.params.id)
-  console.log(`cards found ${cards.length}`)
-  res.json(cards)
+  const deck = await Deck.findById(req.params.id)
+  console.log(`cards found ${deck.cards.length}`)
+  res.json(deck.cards)
 }
 
 app.get('/decks/:id/cards', cardsByDeck)
+
+const cardsById = async (req, res) => {
+  // query params?
+  const card = await Deck.findOne({
+    'cards._id': req.params.id
+  })
+  res.status(200).send(card)
+}
+
+app.get('/cards/:id', cardsById)
+
+// demo
+// post - card - data and basic validation
+// put - card update
+// delete - card from deck
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
