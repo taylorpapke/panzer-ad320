@@ -1,12 +1,22 @@
 import React from 'react'
-import './Topbar.css'
+import { AppBar, IconButton, Toolbar, Typography } from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
 
 function Topbar() {
   return (
-    <div className="bar">
-      <h2 className="bar-title">Notable</h2>
-    </div>
+    <AppBar position="static">
+        <Toolbar variant="dense">
+          <IconButton edge="start" color="inherit" aria-label="home-icon" sx={{ mr: 2 }}>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" color="inherit" component="div">
+            Notoriety
+          </Typography>
+        </Toolbar>
+      </AppBar>
   )
 }
+
+// TODO button in top bar to 'view decks'
 
 export default Topbar
