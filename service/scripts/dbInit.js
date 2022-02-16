@@ -21,24 +21,24 @@ const initDB = async () => {
 
   const deckDocs = []
 
-  for (const deck of decks) {
+  decks.forEach(async (deck) => {
     const newDeck = await Deck.create({
       name: deck.name,
       size: 0,
-      userId: new mongoose.Types.ObjectId()
+      userId: new mongoose.Types.ObjectId(),
     })
     deckDocs.push(newDeck)
-  }
+  })
 
-  for (const card of cards) {
+  cards.forEach((card) => {
     deckDocs[card.deck_id % 10].cards.push({
       frontImage: card.front_image,
       frontText: card.front_text,
       backImage: card.back_image,
-      backText: card.back_text
+      backText: card.back_text,
     })
     deckDocs[card.deck_id % 10].size++
-  }
+  })
 
   deckDocs.forEach(async (deck) => {
     await deck.save()

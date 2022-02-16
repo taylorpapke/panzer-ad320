@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 
 import { Deck } from './models/Deck.js'
+import { cardsById } from './handlers/decks.js'
 
 const app = express()
 const port = 8000
@@ -34,7 +35,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/decks/:id/cards', async (req, res) => {
-  const limit = req.query.limit
+  // const { limit } = req.query
   const deck = await Deck.findById(req.params.id)
   if (deck) {
     res.send(deck.cards.slice(0, 5))
@@ -42,13 +43,6 @@ app.get('/decks/:id/cards', async (req, res) => {
     res.sendStatus(404)
   }
 })
-
-const cardsById = async (req, res) => {
-  const card = await Deck.findOne({
-    'cards._id': req.params.id
-  })
-  res.status(200).send(card)
-}
 
 app.get('/cards/:id', cardsById)
 
@@ -59,13 +53,16 @@ const isUrl = (value) => {
 
 app.post('/cards', async (req, res) => {
   const cardRequest = req.body
-  
-  if ((!cardRequest.frontImage && !cardRequest.frontText) || 
-    (!cardRequest.backImage && !cardRequest.backText)) {
+
+  if (
+    (!cardRequest.frontImage && !cardRequest.frontText)
+    || (!cardRequest.backImage && !cardRequest.backText)
+  ) {
     res.status(400).send('Card data incomplete')
   }
 
-  if ((frontImage && !isUrl(frontImage)) || (backImage && !isUrl(backImage))) {
+  if ((cardRequest.frontImage && !isUrl(cardRequest.frontImage))
+    || (cardRequest.backImage && !isUrl(cardRequest.backImage))) {
     res.status(400).send('Image fields must be valid URLs')
   }
 
@@ -80,7 +77,7 @@ app.post('/cards', async (req, res) => {
         frontImage: cardRequest.frontImage,
         frontText: cardRequest.frontText,
         backImage: cardRequest.backImage,
-        backText: cardRequest.backText
+        backText: cardRequest.backText,
       })
       await deck.save()
       res.sendStatus(204)
@@ -90,6 +87,26 @@ app.post('/cards', async (req, res) => {
   } catch (err) {
     console.log(`error in creating card ${err}`)
     res.sendStatus(502)
+  }
+})
+
+app.get('/decks', async (req, res) => {
+  // In a later lecture we'll explore how to use auth info to limit operations
+  // to a particular user. For now, we'll just get all decks
+  const decks = await Deck.find({}) // Returns all decks
+  if (decks.length < 1) {
+    res.status(404).send('No decks found')
+  } else {
+    res.status(200).send(decks)
+  }
+})
+
+app.post('/decks', (req, res) => {
+  const newDeck = req.body
+  if (!newDeck) {
+    res.status(400).send('No deck info found')
+  } else {
+    res.status(204)
   }
 })
 
