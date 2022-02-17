@@ -8,10 +8,9 @@ export const cardsById = async (req, res) => {
 }
 
 export const cardsInDeck = async (req, res) => {
-  // const { limit } = req.query
   const deck = await Deck.findById(req.params.id)
   if (deck) {
-    res.send(deck.cards.slice(0, 5))
+    res.send(deck.cards)
   } else {
     res.sendStatus(404)
   }

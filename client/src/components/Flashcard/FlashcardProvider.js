@@ -13,7 +13,8 @@ const CardProvider = ({ deckId }) => {
     axios
       .get(`http://localhost:8000/decks/${deckId}/cards`)
       .then(response => {
-          const data = response.data
+        const data = response.data
+        console.log('[FlashcardProvider] response ', data)
           setCards(data)
       })
       .catch(err => {
@@ -40,13 +41,14 @@ const CardProvider = ({ deckId }) => {
   if (!cards) {
     return <span>Loading...</span>
   } else {
-    // TODO list of cards on side
+    console.log('[Flashcard Provider] length of cards ', cards.length)
     return (
       <Stack
       direction="row"
       justifyContent="space-around"
       alignItems="center"
-      spacing={2}
+        spacing={2}
+        sx={{ mt: 3 }}
       >
         <FlashcardList cards={cards} selectedIndex={index} selectIndexHandler={selectIndex} /> 
         <Flashcard card={cards[index]} previous={previous} next={next} />
