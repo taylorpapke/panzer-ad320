@@ -5,7 +5,7 @@ import { Stack } from '@mui/material'
 import Flashcard from './Flashcard'
 import FlashcardList from './FlashcardList'
 
-const CardProvider = ({ deckId }) => {
+const FlashcardProvider = ({ deckId }) => {
   const [cards, setCards] = useState(null)
   const [index, setIndex] = useState(0)
 
@@ -46,7 +46,7 @@ const CardProvider = ({ deckId }) => {
       <Stack
       direction="row"
       justifyContent="space-around"
-      alignItems="center"
+      alignItems="flex-start"
         spacing={2}
         sx={{ mt: 3 }}
       >
@@ -56,4 +56,4 @@ const CardProvider = ({ deckId }) => {
     )
   }
 }
-export default CardProvider
+export default FlashcardProvider

@@ -1,15 +1,17 @@
-import { Container } from '@mui/material';
-import React from 'react'
-import './App.css';
+import React, { useState } from 'react'
+import { Container } from '@mui/material'
+import './App.css'
 import Topbar from './components/Topbar/Topbar'
-import FlashcardProvider from './components/Flashcard/FlashcardProvider';
+import DeckProvider from './components/Deck/DeckProvider'
 
 function App() {
+  const [createMode, setCreateMode] = useState(false)
+
   return (
     <React.Fragment>
-      <Topbar />
+      <Topbar createCardHandler={() => { setCreateMode(true) }} />
       <Container width="md">
-        <FlashcardProvider deckId="620d8ea5fced0e15829e5d35" />
+        <DeckProvider deckId="620d8ea5fced0e15829e5d35" createMode={createMode} endCreate/>
       </Container>
     </React.Fragment>
   )
