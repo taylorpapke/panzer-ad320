@@ -1,22 +1,27 @@
+import { validationResult } from 'express-validator'
 import { Deck } from '../models/Deck.js'
 
 const isUrl = (value) => {
-  const re = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+  const re =
+    /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
   return re.test(value)
 }
 
 export const createCard = async (req, res) => {
   const cardRequest = req.body
+  validationResult(req)
 
   if (
-    (!cardRequest.frontImage && !cardRequest.frontText)
-    || (!cardRequest.backImage && !cardRequest.backText)
+    (!cardRequest.frontImage && !cardRequest.frontText) ||
+    (!cardRequest.backImage && !cardRequest.backText)
   ) {
     res.status(400).send('Card data incomplete')
   }
 
-  if ((cardRequest.frontImage && !isUrl(cardRequest.frontImage))
-    || (cardRequest.backImage && !isUrl(cardRequest.backImage))) {
+  if (
+    (cardRequest.frontImage && !isUrl(cardRequest.frontImage)) ||
+    (cardRequest.backImage && !isUrl(cardRequest.backImage))
+  ) {
     res.status(400).send('Image fields must be valid URLs')
   }
 

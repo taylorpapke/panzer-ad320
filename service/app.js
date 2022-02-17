@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import { body } from 'express-validator'
 
 import { createCard } from './handlers/cards.js'
 import {
@@ -31,9 +32,19 @@ app.use(express.json())
 
 app.get('/decks/:id/cards', cardsInDeck)
 app.get('/cards/:id', cardsById)
-app.post('/cards', createCard)
+app.post(
+  '/cards',
+  body('frontImage').isURL(),
+  body('frontText').not().isEmpty(),
+  body('backImage').isURL(),
+  body('backText').not().isEmpty(),
+  createCard
+)
 app.get('/decks', getDecks)
 app.post('/decks', createDeck)
+
+// TODO Delete and update routes
+// TODO User routes
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)

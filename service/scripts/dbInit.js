@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
 import mongoose from 'mongoose'
 import { Deck } from '../models/Deck.js'
 
@@ -21,16 +23,16 @@ const initDB = async () => {
 
   const deckDocs = []
 
-  decks.forEach(async (deck) => {
+  for (const deck of decks) {
     const newDeck = await Deck.create({
       name: deck.name,
       size: 0,
       userId: new mongoose.Types.ObjectId(),
     })
     deckDocs.push(newDeck)
-  })
+  }
 
-  cards.forEach((card) => {
+  for (const card of cards) {
     deckDocs[card.deck_id % 10].cards.push({
       frontImage: card.front_image,
       frontText: card.front_text,
@@ -38,7 +40,7 @@ const initDB = async () => {
       backText: card.back_text,
     })
     deckDocs[card.deck_id % 10].size++
-  })
+  }
 
   deckDocs.forEach(async (deck) => {
     await deck.save()
