@@ -5,6 +5,7 @@ const CreateFlashcard = ({ deckId }) => {
   const handleChange = (event) => {
     console.log("[CreateFlashcard] onChange ", event)
   }
+  
   const handleSubmit = (event) => {
     console.log("[CreateFlashcard] onSubmit ", event)
     event.preventDefault()

@@ -16,6 +16,7 @@
     "no-useless-escape": "off",
     "no-plusplus": "off",
     "operator-linebreak": "off",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "no-underscore-dangle": "off"
   }
 }

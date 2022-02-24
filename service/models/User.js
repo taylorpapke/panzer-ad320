@@ -7,8 +7,21 @@ const validateEmail = (email) => {
   return re.test(email)
 }
 
+const CardSchema = new mongoose.Schema({
+  frontImage: String,
+  frontText: String,
+  backImage: String,
+  backText: String,
+})
+
+const DeckSchema = new mongoose.Schema({
+  name: String,
+  cards: [CardSchema]
+})
+
 const UserSchema = new mongoose.Schema({
-  displayName: String,
+  firstName: String,
+  lastName: String,
   email: {
     type: String,
     trim: true,
@@ -17,13 +30,8 @@ const UserSchema = new mongoose.Schema({
     required: 'Email address is required',
     validate: [validateEmail, 'Please provide a valid email address'],
   },
-  joined: {
-    type: Date,
-    default: Date.now,
-  },
-  active: Boolean,
+  password: { type: String, required: true },
+  decks: [DeckSchema]
 })
 
-const User = mongoose.model('User', UserSchema)
-
-export default User
+export const User = mongoose.model('User', UserSchema)
