@@ -1,17 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Container } from '@mui/material'
 import './App.css'
 import Topbar from './components/Topbar/Topbar'
 import DeckProvider from './components/Deck/DeckProvider'
+import axios from 'axios'
 
 function App() {
   const [createMode, setCreateMode] = useState(false)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/users').then((response) => {
+      console.log(`response from users ${response.data[0].firstName}`)
+      setUser(response.data[0])
+    })
+  }, [])
 
   return (
     <React.Fragment>
       <Topbar createCardHandler={() => { setCreateMode(true) }} />
-      <Container width="md">
-        <DeckProvider deckId="620d8ea5fced0e15829e5d35" createMode={createMode} endCreate/>
+      <Container width="lg">
+        {user === null ? <span>Loading...</span> :
+          <DeckProvider decks={user.decks} createMode={createMode} /> }
       </Container>
     </React.Fragment>
   )
