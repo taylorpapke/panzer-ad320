@@ -1,9 +1,22 @@
-import React from "react"
+import React, {useState} from "react"
 import { Button, Stack, TextField } from "@mui/material"
 
 const CreateFlashcard = ({ deckId }) => {
+  // how can we use state here to make sure we're validating info
+  console.log(`[CreateFlashcard] deckId is ${deckId}`)
+  const [frontText, setFrontText] = useState('')
+  const [backText, setBackText] = useState('')
+
   const handleChange = (event) => {
-    console.log("[CreateFlashcard] onChange ", event)
+    event.preventDefault()
+    // console.log("[CreateFlashcard] onChange ", event)
+    if (event.target.name === 'frontText') {
+      console.log("[CreateFlashcard] front text changed!")
+      setFrontText(event.target.value)
+    } else {
+      console.log("[CreateFlashcard] back text changed!")
+      setBackText(event.target.value)
+    }
   }
   
   const handleSubmit = (event) => {
@@ -14,6 +27,7 @@ const CreateFlashcard = ({ deckId }) => {
 
   return (
     <Stack component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <span>Form values: {frontText} &amp; {backText}</span>
       <TextField
         margin="normal"
         required
@@ -21,6 +35,7 @@ const CreateFlashcard = ({ deckId }) => {
         id="frontImage"
         label="Front Image"
         name="frontImage"
+        onChange={handleChange}
         autoFocus
       />
       <TextField
@@ -30,6 +45,7 @@ const CreateFlashcard = ({ deckId }) => {
         name="frontText"
         label="Front Text"
         id="frontText"
+        onChange={handleChange}
       />
       <TextField
         margin="normal"
@@ -46,9 +62,13 @@ const CreateFlashcard = ({ deckId }) => {
         name="backText"
         label="Back Text"
         id="backText"
+        onChange={handleChange}
       />
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Submit
+      </Button>
+      <Button fullWidth variant="contained" sx={{ mt: 1, mb: 1 }}>
+        Cancel
       </Button>
     </Stack>
   )
