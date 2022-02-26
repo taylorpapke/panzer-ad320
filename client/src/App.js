@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container } from '@mui/material'
+import Container from '@mui/material/Container'
 import './App.css'
 import Topbar from './components/Topbar/Topbar'
 import DeckProvider from './components/Deck/DeckProvider'
@@ -18,10 +18,10 @@ function App() {
 
   return (
     <React.Fragment>
-      <Topbar createCardHandler={() => { setCreateMode(true) }} />
+      <Topbar createMode={createMode} createCardHandler={() => { setCreateMode(!createMode) }} />
       <Container width="lg">
         {user === null ? <span>Loading...</span> :
-          <DeckProvider decks={user.decks} createMode={createMode} /> }
+          <DeckProvider userId={user._id} decks={user.decks} createMode={createMode} /> }
       </Container>
     </React.Fragment>
   )

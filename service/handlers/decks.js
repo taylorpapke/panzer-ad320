@@ -1,4 +1,3 @@
-// import { validationResult } from 'express-validator'
 import { User } from '../models/User.js'
 
 export const deckById = async (req, res) => {

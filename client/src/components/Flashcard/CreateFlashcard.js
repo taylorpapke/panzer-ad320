@@ -1,33 +1,34 @@
 import React, {useState} from "react"
 import { Button, Stack, TextField } from "@mui/material"
+import axios from 'axios'
 
-const CreateFlashcard = ({ deckId }) => {
+const CreateFlashcard = ({ userId, deckId }) => {
   // how can we use state here to make sure we're validating info
   console.log(`[CreateFlashcard] deckId is ${deckId}`)
-  const [frontText, setFrontText] = useState('')
-  const [backText, setBackText] = useState('')
+  const [formValue, setFormValue] = useState({})
 
   const handleChange = (event) => {
     event.preventDefault()
-    // console.log("[CreateFlashcard] onChange ", event)
-    if (event.target.name === 'frontText') {
-      console.log("[CreateFlashcard] front text changed!")
-      setFrontText(event.target.value)
-    } else {
-      console.log("[CreateFlashcard] back text changed!")
-      setBackText(event.target.value)
-    }
+    console.log("[CreateFlashcard] onChange ", event)
+    const currentValues = formValue
+    currentValues[event.target.name] = event.target.value
+    setFormValue(currentValues)
   }
   
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     console.log("[CreateFlashcard] onSubmit ", event)
     event.preventDefault()
-    // make that network request
+    try {
+      const response = await axios.post(`http://localhost:8000/decks/${deckId}/cards`, formValue, { headers: { user: userId } })
+      console.log(`[createflashcard] response submit ${response.status}`)
+    } catch (err) {
+      console.log(`response error ${err.status}`)
+    }
   }
 
   return (
     <Stack component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-      <span>Form values: {frontText} &amp; {backText}</span>
+      <span>Form values: {formValue.frontText} &amp; {formValue.backText}</span>
       <TextField
         margin="normal"
         required
@@ -54,6 +55,7 @@ const CreateFlashcard = ({ deckId }) => {
         id="backImage"
         label="Back Image"
         name="backImage"
+        onChange={handleChange}
       />
       <TextField
         margin="normal"
@@ -66,9 +68,6 @@ const CreateFlashcard = ({ deckId }) => {
       />
       <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
         Submit
-      </Button>
-      <Button fullWidth variant="contained" sx={{ mt: 1, mb: 1 }}>
-        Cancel
       </Button>
     </Stack>
   )

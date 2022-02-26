@@ -9,10 +9,10 @@ import {
   Stack,
 } from "@mui/material"
 
-import FlashcardProvider from '../Flashcard/FlashcardProvider'
+import Deck from '../Deck/Deck'
 import CreateFlashcard from '../Flashcard/CreateFlashcard'
 
-const DeckProvider = ({ decks, createMode }) => {
+const DeckProvider = ({ userId, decks, createMode }) => {
   const [index, setIndex] = useState(0)
 
   return (
@@ -43,7 +43,7 @@ const DeckProvider = ({ decks, createMode }) => {
           })}
         </List>
       </Paper>
-      <div>{createMode ? <CreateFlashcard deckId={decks[index]._id}/> : <FlashcardProvider deck={decks[index]} />}</div>
+      <div>{createMode ? <CreateFlashcard userId={userId} deckId={decks[index]._id}/> : <Deck deck={decks[index]} />}</div>
     </Stack>
   )
 }

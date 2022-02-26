@@ -42,11 +42,7 @@ const notImplemented = (req, res) => {
 // Deck Routes
 app.get('/decks', getDecks)
 app.get('/decks/:id', deckById)
-app.post(
-  '/decks',
-  body('name').not().isEmpty(),
-  createDeck
-)
+app.post('/decks', body('name').not().isEmpty(), createDeck)
 app.put(
   '/decks/:id',
   body('name').not().isEmpty(),
@@ -58,8 +54,6 @@ app.post(
   '/decks/:id/cards',
   body('frontImage').isURL(),
   body('frontText').not().isEmpty(),
-  body('backImage').isURL(),
-  body('backText').not().isEmpty(),
   createCard
 )
 

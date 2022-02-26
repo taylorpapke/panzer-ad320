@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { List, ListItemButton, ListItemText, ListSubheader, Paper, Stack } from "@mui/material"
 
-import Flashcard from "./Flashcard"
+import Flashcard from "../Flashcard/Flashcard"
 
-const FlashcardProvider = ({ deck }) => {  // AKA Deck
+const Deck = ({ deck }) => {
   const [index, setIndex] = useState(0)
   const [isFront, setIsFront] = useState(true)
 
@@ -72,4 +72,4 @@ const FlashcardProvider = ({ deck }) => {  // AKA Deck
   }
 
 }
-export default FlashcardProvider
+export default Deck
