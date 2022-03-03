@@ -4,23 +4,6 @@ import { User } from '../models/User.js'
 
 const decksRouter = Router()
 
-const deckById = async (req, res) => {
-  const { userId } = req.user
-  console.log(`user: ${userId} deckId ${req.params.id}`)
-  try {
-    const user = await User.findById(userId)
-    const deck = user.decks.id(req.params.id)
-    if (deck) {
-      res.send(deck)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (err) {
-    console.log(`${deckById.name}: ${err}`)
-    res.sendStatus(500)
-  }
-}
-
 const getDecks = async (req, res) => {
   const { userId, other } = req.user
   console.log(`Other data from the token ${other}`)
@@ -38,7 +21,7 @@ const getDecks = async (req, res) => {
 }
 
 const createDeck = async (req, res) => {
-  const { userId } = req.user
+  const userId = ''
   const newDeck = req.body
   try {
     const user = await User.findById(userId)
@@ -55,7 +38,7 @@ const createDeck = async (req, res) => {
 }
 
 const createCard = async (req, res) => {
-  const { userId } = req.user
+  const userId = ''
   const deckId = req.params.id
   const newCard = req.body
   try {
@@ -72,7 +55,7 @@ const createCard = async (req, res) => {
 }
 
 const deleteDeck = async (req, res) => {
-  const { userId } = req.user
+  const userId = ''
   const deckId = req.params.id
   try {
     const user = await User.findById(userId)
@@ -87,7 +70,7 @@ const deleteDeck = async (req, res) => {
 }
 
 const updateDeck = async (req, res) => {
-  const { userId } = req.user
+  const userId = ''
   const deckId = req.params.id
   const newDeck = req.body
   try {
@@ -103,7 +86,6 @@ const updateDeck = async (req, res) => {
 }
 
 decksRouter.get('/', getDecks)
-decksRouter.get('/:id', deckById)
 decksRouter.post('/', body('name').not().isEmpty(), createDeck)
 decksRouter.put(
   '/:id',
