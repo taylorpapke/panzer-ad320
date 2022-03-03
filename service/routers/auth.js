@@ -1,9 +1,12 @@
+import { Router } from 'express'
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/User.js'
 
-export const register = async (req, res) => {
+const authRouter = Router()
+
+const register = async (req, res) => {
   const validationResults = validationResult(req)
   if (!validationResults.isEmpty()) {
     console.log(`Validation failed ${validationResult}`)
@@ -30,7 +33,7 @@ export const register = async (req, res) => {
   }
 }
 
-export async function login(req, res) {
+async function login(req, res) {
   const validationResults = validationResult(req)
   if (!validationResults.isEmpty()) {
     console.log(`Validation failed ${validationResult}`)
@@ -40,12 +43,12 @@ export async function login(req, res) {
   const creds = req.body
 
   try {
-    const existingUser = await User.find({ email: creds.email })
+    const existingUser = await User.findOne({ email: creds.email })
 
     if (!existingUser) {
       res.status(404).send('No user found')
     } else {
-      const passwordComparison = await bcrypt.compare(existingUser.password, creds.password)
+      const passwordComparison = await bcrypt.compare(creds.password, existingUser.password)
       if (!passwordComparison) {
         res.status(401).send('Username or password are invalid')
       } else {
@@ -53,7 +56,7 @@ export async function login(req, res) {
           user: existingUser._id,
           otherData: 'for-example'
         }
-        const token = await jwt.sign(payload, 'not a secret', { expiresIn: 86400 })
+        const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
         res.status(200).send({
           expiresIn: 86400,
           token: `Bearer ${token}`
@@ -61,7 +64,28 @@ export async function login(req, res) {
       }
     }
   } catch (err) {
-    console.log(`User creation failed: ${err}`)
+    console.log(`User login failed: ${err}`)
     res.status(502).send('There was an error in login')
+  }
+}
+
+authRouter.post('/login', login)
+authRouter.post('/register', register)
+
+export default authRouter
+
+export const verifyToken = async (req, res, next) => {
+  const authParts = req.headers.authorization.split(' ')
+  if (authParts[0] !== 'Bearer' || authParts.length < 2) {
+    res.status(400).send('Bad authentication token')
+  } else if (authParts[1]) {
+    const decoded = await jwt.verify(authParts[1], process.env.JWT_SECRET)
+    req.user = {
+      userId: decoded.user,
+      other: decoded.otherData
+    }
+    next()
+  } else {
+    res.status(401).send('Authentication failed')
   }
 }
