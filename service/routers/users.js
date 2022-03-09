@@ -28,7 +28,12 @@ const getUsers = async (req, res) => {
 
 const getUsersById = async (req, res) => {
   const user = await User.findById(req.params.id)
-  res.send(user)
+  if (user.role === 'admin' || user.role === 'superuser') {
+    const users = await User.find({})
+    res.send(sanitizeUsers(users))  
+  } else {
+    res.status(403).send('Forbidden')
+  }
 }
 
 const updateUser = async (req, res) => {
