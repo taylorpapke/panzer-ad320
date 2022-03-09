@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { validationResult } from 'express-validator'
+import { body, validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/User.js'
@@ -14,7 +14,7 @@ const register = async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ email: req.body.email })
+    const existingUser = await User.findOne({ email: req.body.email.toLowercase() })
     console.log(`Existing user ${existingUser}`)
     if (existingUser) {
       res.status(400).send('That email is already registered')
@@ -43,7 +43,7 @@ async function login(req, res) {
   const creds = req.body
 
   try {
-    const existingUser = await User.findOne({ email: creds.email })
+    const existingUser = await User.findOne({ email: creds.email.toLowercase() })
 
     if (!existingUser) {
       res.status(404).send('No user found')
@@ -54,7 +54,7 @@ async function login(req, res) {
       } else {
         const payload = {
           user: existingUser._id,
-          otherData: 'for-example'
+          role: existingUser.role
         }
         const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
         res.status(200).send({
@@ -70,7 +70,7 @@ async function login(req, res) {
 }
 
 authRouter.post('/login', login)
-authRouter.post('/register', register)
+authRouter.post('/register', body('email').isEmail(), body('password').notEmpty(), register)
 
 export default authRouter
 
@@ -79,13 +79,17 @@ export const verifyToken = async (req, res, next) => {
   if (authParts[0] !== 'Bearer' || authParts.length < 2) {
     res.status(400).send('Bad authentication token')
   } else if (authParts[1]) {
-    const decoded = await jwt.verify(authParts[1], process.env.JWT_SECRET)
-    req.user = {
-      userId: decoded.user,
-      other: decoded.otherData
+    try {
+      const decoded = await jwt.verify(authParts[1], process.env.JWT_SECRET)
+      req.user = {
+        userId: decoded.user,
+        role: decoded.role
+      }
+      next()
+    } catch (error) {
+      res.status(401).send('Authentication failed')
     }
-    next()
   } else {
-    res.status(401).send('Authentication failed')
+    res.status(400).send('Bad token')
   }
 }
