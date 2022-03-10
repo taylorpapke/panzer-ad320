@@ -29,9 +29,10 @@ const getUsers = async (req, res) => {
 const getUsersById = async (req, res) => {
   const { userId } = req.user
   const requestor = await User.findById(userId)
+  console.log(`[getUsersById] found requestor ${requestor} for userId ${userId} from param ${req.params.id}`)
   if (requestor.role === 'admin' || 
     requestor.role === 'superuser' || 
-    requestor.userId === req.params.id) 
+    requestor._id.toString() === req.params.id.toString()) 
   {
     const user = await User.findById(req.params.id)
     const arr = sanitizeUsers([user])

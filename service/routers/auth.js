@@ -14,7 +14,7 @@ const register = async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ email: req.body.email.toLowercase() })
+    const existingUser = await User.findOne({ email: req.body.email.toLowerCase() })
     console.log(`Existing user ${existingUser}`)
     if (existingUser) {
       res.status(400).send('That email is already registered')
@@ -43,7 +43,7 @@ async function login(req, res) {
   const creds = req.body
 
   try {
-    const existingUser = await User.findOne({ email: creds.email.toLowercase() })
+    const existingUser = await User.findOne({ email: creds.email.toLowerCase() })
 
     if (!existingUser) {
       res.status(404).send('No user found')
@@ -59,7 +59,7 @@ async function login(req, res) {
         const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
         res.status(200).send({
           expiresIn: 86400,
-          token: `Bearer ${token}`
+          token: token
         })
       }
     }

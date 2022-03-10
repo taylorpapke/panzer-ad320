@@ -8,17 +8,24 @@ import Topbar from './components/Topbar/Topbar';
 import reportWebVitals from './reportWebVitals';
 import Login from './components/Login/Login'
 import Register from './components/Register/Register'
+import Protected from './components/Auth/Protected'
+import CreateFlashcard from './components/Flashcard/CreateFlashcard'
+import AuthProvider from './components/Auth/AuthProvider'
 
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Topbar createMode={false} createCardHandler={() => { console.log("things") }} />
-      <Routes>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <AuthProvider>
+        <Topbar createMode={false} createCardHandler={() => { console.log("things") }} />
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/app" element={<Protected><App /></Protected>} />
+          <Route path="/create/:deck_id" element={<Protected><CreateFlashcard /></Protected>} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

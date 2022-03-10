@@ -1,13 +1,24 @@
 import React from 'react'
 import { Button, Box, TextField, Typography } from '@mui/material'
+import { useAuth } from '../Auth/AuthProvider'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const Login = () => {
+  const { auth, login } = useAuth()
+  const navigate = useNavigate()
+  let location = useLocation()
+
+  const source = location.state?.from?.pathname || "/app"
+
   const handleSubmit = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
+    })
+    login(data.get('email'), data.get('password'), () => {
+      navigate(source, { replace: true })
     })
   }
 

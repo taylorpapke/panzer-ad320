@@ -2,6 +2,7 @@ import React from 'react'
 import { Button, Box, TextField, Typography } from '@mui/material'
 
 const Register = () => {
+  // assignment: use the useAuth hook here to handle registering a new user
   const handleSubmit = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
