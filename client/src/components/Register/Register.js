@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Box, TextField, Typography } from '@mui/material'
 
-const Login = () => {
+const Register = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
@@ -21,7 +21,7 @@ const Login = () => {
       }}
     >
       <Typography component="h1" variant="h5">
-        Sign in
+        Register
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
@@ -57,4 +57,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Register
