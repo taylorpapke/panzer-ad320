@@ -46,12 +46,12 @@ const updateUser = async (req, res) => {
     res.sendStatus(200)
   } else if (requestor.role === 'superuser') {
     const result = await User.findById(req.params.id)
-    if (result === 'superuser') {
+    if (result.role === 'superuser') {
       update(req.body)
     }
   } else if (requestor.role === 'user') {
     const result = await User.findById(req.params.id)
-    if (result === 'user') {
+    if (result.role === 'user') {
       update(req.body)
     }
   } else {
@@ -68,7 +68,7 @@ const deleteUser = async (req, res) => {
     res.sendStatus(200)
   } else if (requestor.role === 'superuser') {
     const result = await User.findById(req.params.id)
-    if (result === 'superuser') {
+    if (result.role === 'superuser') {
       update({ active: false })
     }
   } else {

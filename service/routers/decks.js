@@ -18,38 +18,79 @@ const getDecks = async (req, res) => {
     console.log(`${getDecks.name}: ${err}`)
     res.sendStatus(500)
   }
-}
+} 
 
 const createDeck = async (req, res) => {
-  const userId = ''
+  //const userId = ''
   const newDeck = req.body
-  try {
-    const user = await User.findById(userId)
-    user.decks.push({
-      name: newDeck.name,
-      cards: []
-    })
-    await user.save()
-    res.sendStatus(204)
-  } catch (err) {
-    console.log(`${createDeck.name}: ${err}`)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin' || requestor.role === 'superuser') {
+    try {
+      const user = await User.findById(userId)
+      user.decks.push({
+        name: newDeck.name,
+        cards: []
+      })
+      await user.save()
+      res.sendStatus(204)
+    } catch (err) {
+      console.log(`${createDeck.name}: ${err}`)
+      res.sendStatus(500)
+    }
+  } else if (requestor.role === 'user') {
+    try {
+      const user = await User.findById(req.params.id)
+      if (user.role = 'user') {
+        user.decks.push({
+          name: newDeck.name,
+          cards: []
+        })
+        await user.save()
+        res.sendStatus(204)
+      }
+    } catch (err) {
+      console.log(`${createDeck.name}: ${err}`)
+      res.sendStatus(500)
+    }
+  } else {
     res.sendStatus(500)
   }
 }
 
 const createCard = async (req, res) => {
-  const userId = ''
+  //const userId = ''
   const deckId = req.params.id
   const newCard = req.body
-  try {
-    const user = await User.findById(userId)
-    const deck = user.decks.id(deckId)
-    deck.cards.push(newCard)
-    await user.save()
-    const newId = deck.cards[deck.cards.length - 1]
-    res.status(200).send(newId._id)
-  } catch (err) {
-    console.log(`${createCard.name}: ${err}`)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin' || requestor.role === 'superuser') {
+    try {
+      const user = await User.findById(req.params.id)
+      const deck = user.decks.id(deckId)
+      deck.cards.push(newCard)
+      await user.save()
+      const newId = deck.cards[deck.cards.length - 1]
+      res.status(200).send(newId._id)
+    } catch (err) {
+      console.log(`${createCard.name}: ${err}`)
+      res.sendStatus(500)
+    }
+  } else if (requestor.role === 'user') {
+    try {
+      const user = await User.findById(req.params.id)
+      if (user.role === 'user') {
+        const deck = user.decks.id(deckId)
+        deck.cards.push(newCard)
+        await user.save()
+        const newId = deck.cards[deck.cards.length - 1]
+        res.status(200).send(newId._id)
+      }
+    } catch (err) {
+      console.log(`${createCard.name}: ${err}`)
+      res.sendStatus(500)
+    }
+  } else {
     res.sendStatus(500)
   }
 }
@@ -61,7 +102,7 @@ const deleteDeck = async (req, res) => {
   const requestor = await User.findById(userId)
   if (requestor.role === 'admin' || requestor.role === 'superuser') {
     try {
-      const user = await User.findById(userId)
+      const user = await User.findById(req.params.id)
       const removedDeck = user.decks.id(deckId).remove()
       console.log(removedDeck)
       user.save()
@@ -70,21 +111,55 @@ const deleteDeck = async (req, res) => {
       console.log(`${deleteDeck.name}: ${err}`)
       res.sendStatus(500)
     }
+  } else if (requestor.role === 'user') {
+      try {
+        const user = await User.findById(req.params.id)
+        if (user.role === 'user') {
+          const removedDeck = user.decks.id(deckId).remove()
+          console.log(removedDeck)
+          user.save()
+          res.sendStatus(204)
+        }
+      } catch (err) {
+        console.log(`${deleteDeck.name}: ${err}`)
+        res.sendStatus(500)
+      }
+  } else {
+    res.sendStatus(500)
   }
 }
 
 const updateDeck = async (req, res) => {
-  const userId = ''
+  //const userId = ''
   const deckId = req.params.id
   const newDeck = req.body
-  try {
-    const user = await User.findById(userId)
-    const deck = user.decks.id(deckId)
-    deck.name = newDeck.name
-    await user.save()
-    res.sendStatus(204)
-  } catch (err) {
-    console.log(`${updateDeck.name}: ${err}`)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin' || requestor.role === 'superuser') {
+    try {
+      const user = await User.findById(req.params.id)
+      const deck = user.decks.id(deckId)
+      deck.name = newDeck.name
+      await user.save()
+      res.sendStatus(204)
+    } catch (err) {
+      console.log(`${updateDeck.name}: ${err}`)
+      res.sendStatus(500)
+    }
+  } else if (requestor.role === 'user') {
+      try {
+        const user = await User.findById(req.params.id)
+        if (user.role === 'user') {
+          const deck = user.decks.id(deckId)
+          deck.name = newDeck.name
+          await user.save()
+          res.sendStatus(204)
+        }
+      } catch (err) {
+        console.log(`${updateDeck.name}: ${err}`)
+        res.sendStatus(500)
+      } 
+  } else {
     res.sendStatus(500)
   }
 }
