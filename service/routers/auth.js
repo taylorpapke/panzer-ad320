@@ -43,7 +43,7 @@ async function login(req, res) {
   const creds = req.body
 
   try {
-    const existingUser = await User.findOne({ email: creds.email.toLowercase() })
+    const existingUser = await User.findOne({ email: creds.email })
 
     if (!existingUser) {
       res.status(404).send('No user found')
@@ -56,7 +56,7 @@ async function login(req, res) {
           user: existingUser._id,
           otherData: 'for-example'
         }
-        const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
         res.status(200).send({
           expiresIn: 86400,
           token: `Bearer ${token}`

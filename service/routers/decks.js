@@ -55,17 +55,21 @@ const createCard = async (req, res) => {
 }
 
 const deleteDeck = async (req, res) => {
-  const userId = ''
+  //const userId = ''
   const deckId = req.params.id
-  try {
-    const user = await User.findById(userId)
-    const removedDeck = user.decks.id(deckId).remove()
-    console.log(removedDeck)
-    user.save()
-    res.sendStatus(204)
-  } catch (err) {
-    console.log(`${deleteDeck.name}: ${err}`)
-    res.sendStatus(500)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin' || requestor.role === 'superuser') {
+    try {
+      const user = await User.findById(userId)
+      const removedDeck = user.decks.id(deckId).remove()
+      console.log(removedDeck)
+      user.save()
+      res.sendStatus(204)
+    } catch (err) {
+      console.log(`${deleteDeck.name}: ${err}`)
+      res.sendStatus(500)
+    }
   }
 }
 

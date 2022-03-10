@@ -4,7 +4,7 @@ import { User } from '../models/User.js'
 const usersRouter = Router()
 
 function sanitizeUsers(users) {
-  const sanitizeUsers = users.map((user) => ({
+  const sanitizedUsers = users.map((user) => ({
       id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
@@ -12,7 +12,7 @@ function sanitizeUsers(users) {
       decks: user.decks,
       active: user.active
     }))
-    return sanitizeUsers
+    return sanitizedUsers
 }
 
 const getUsers = async (req, res) => {
@@ -27,25 +27,53 @@ const getUsers = async (req, res) => {
 }
 
 const getUsersById = async (req, res) => {
-  const user = await User.findById(req.params.id)
-  if (user.role === 'admin' || user.role === 'superuser') {
-    const users = await User.find({})
-    res.send(sanitizeUsers(users))  
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin' || requestor.role === 'superuser') {
+    const user = await User.findById(req.params.id)
+    res.send(sanitizeUsers(user))  
   } else {
     res.status(403).send('Forbidden')
   }
 }
 
 const updateUser = async (req, res) => {
-  const result = await User.findByIdAndUpdate(req.params.id, req.body)
-  console.log('result ', result)
-  res.sendStatus(503)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin') {
+    const result = await User.findByIdAndUpdate(req.params.id, req.body)
+    console.log('result ', result)
+    res.sendStatus(200)
+  } else if (requestor.role === 'superuser') {
+    const result = await User.findById(req.params.id)
+    if (result === 'superuser') {
+      update(req.body)
+    }
+  } else if (requestor.role === 'user') {
+    const result = await User.findById(req.params.id)
+    if (result === 'user') {
+      update(req.body)
+    }
+  } else {
+    res.sendStatus(503)
+  }
 }
 
 const deleteUser = async (req, res) => {
-  const result = await User.findByIdAndUpdate(req.params.id, { active: false })
-  console.log('result ', result)
-  res.sendStatus(503)
+  const { userId } = req.user
+  const requestor = await User.findById(userId)
+  if (requestor.role === 'admin') {
+    const result = await User.findByIdAndUpdate(req.params.id, { active: false })
+    console.log('result ', result)
+    res.sendStatus(200)
+  } else if (requestor.role === 'superuser') {
+    const result = await User.findById(req.params.id)
+    if (result === 'superuser') {
+      update({ active: false })
+    }
+  } else {
+    res.sendStatus(503)
+  }
 }
 
 usersRouter.get('/', getUsers)
