@@ -1,25 +1,31 @@
 import React from 'react'
 import { Button, Box, TextField, Typography } from '@mui/material'
 import { useAuth } from '../Auth/AuthProvider'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Navigate, useNavigate, useLocation } from 'react-router-dom'
 
 const Login = () => {
   const { auth, login } = useAuth()
   const navigate = useNavigate()
   let location = useLocation()
 
+  // Assignment: redirect the newly logged in user to the page they were on
+  // OR to the User component
+
   const source = location.state?.from?.pathname || "/app"
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    // we've used state to handle form data on submit, but if we don't really
+    // care about validation or more complex persistence, we can rely on
+    // the event data itself and an object in React called FormData
     const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
     login(data.get('email'), data.get('password'), () => {
       navigate(source, { replace: true })
     })
+  }
+
+  if (auth) {
+    return <Navigate to={source} />
   }
 
   return (

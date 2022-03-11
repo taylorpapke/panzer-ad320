@@ -20,12 +20,12 @@ const AuthProvider = ({ children }) => {
             callback()
         } catch (err) {
             console.log(`Login error ${err}`)
-            // assignment: what should we do if this fails?
+            // Assignment: what should we do if this fails?
         }
     }
 
     const register = (email, password, callback) => { 
-        // assignment: how do we register someone?    
+        // Assignment: how do we register someone?    
     }
 
     const authCtx = {

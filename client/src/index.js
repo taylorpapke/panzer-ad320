@@ -17,13 +17,13 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Topbar createMode={false} createCardHandler={() => { console.log("things") }} />
+        <Topbar />
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/app" element={<Protected><App /></Protected>} />
-          <Route path="/create/:deck_id" element={<Protected><CreateFlashcard /></Protected>} />
+          <Route path="/create" element={<Protected><CreateFlashcard /></Protected>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

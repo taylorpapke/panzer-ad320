@@ -1,4 +1,5 @@
 import { request, Router } from 'express'
+import { body } from 'express-validator'
 import { User } from '../models/User.js'
 
 const usersRouter = Router()
@@ -42,6 +43,7 @@ const getUsersById = async (req, res) => {
   }
 }
 
+// TODO: finish these routes
 const updateUser = async (req, res) => {
   const result = await User.findByIdAndUpdate(req.params.id, req.body)
   console.log('result ', result)

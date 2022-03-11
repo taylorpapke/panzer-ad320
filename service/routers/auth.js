@@ -3,19 +3,13 @@ import { body, validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/User.js'
+import { validator } from '../middlewares/validation.js'
 
 const authRouter = Router()
 
 const register = async (req, res) => {
-  const validationResults = validationResult(req)
-  if (!validationResults.isEmpty()) {
-    console.log(`Validation failed ${validationResult}`)
-    res.status(400).send('Payload invalid')
-  }
-
   try {
     const existingUser = await User.findOne({ email: req.body.email.toLowerCase() })
-    console.log(`Existing user ${existingUser}`)
     if (existingUser) {
       res.status(400).send('That email is already registered')
     } else {
@@ -34,12 +28,6 @@ const register = async (req, res) => {
 }
 
 async function login(req, res) {
-  const validationResults = validationResult(req)
-  if (!validationResults.isEmpty()) {
-    console.log(`Validation failed ${validationResult}`)
-    res.status(400).send('Payload invalid')
-  }
-
   const creds = req.body
 
   try {
@@ -69,8 +57,8 @@ async function login(req, res) {
   }
 }
 
-authRouter.post('/login', login)
-authRouter.post('/register', body('email').isEmail(), body('password').notEmpty(), register)
+authRouter.post('/login', body('email').isEmail(), body('password').notEmpty(), validator, login)
+authRouter.post('/register', body('email').isEmail(), body('password').notEmpty(), validator, register)
 
 export default authRouter
 
