@@ -11,7 +11,7 @@ import {
 
 import Deck from '../Deck/Deck'
 
-const DeckProvider = ({ userId, decks, createMode }) => {
+const DeckProvider = ({ decks }) => {
   const [index, setIndex] = useState(0)
 
   return (

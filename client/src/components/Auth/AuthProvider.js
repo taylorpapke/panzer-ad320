@@ -25,7 +25,7 @@ const AuthProvider = ({ children }) => {
     }
 
     const register = (email, password, callback) => { 
-        // Assignment: how do we register someone?    
+        // Assignment: how do we register someone?  
     }
 
     const authCtx = {

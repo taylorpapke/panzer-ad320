@@ -43,7 +43,7 @@ const getUsersById = async (req, res) => {
   }
 }
 
-// TODO: finish these routes
+// These routes will remain partially completed for the rest of the course.
 const updateUser = async (req, res) => {
   const result = await User.findByIdAndUpdate(req.params.id, req.body)
   console.log('result ', result)
