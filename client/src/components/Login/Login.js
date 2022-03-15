@@ -11,7 +11,7 @@ const Login = () => {
   // Assignment: redirect the newly logged in user to the page they were on
   // OR to the User component
 
-  const source = location.state?.from?.pathname || "/app"
+  const source = location.state?.from?.pathname || "/login" || "/app"
 
   const handleSubmit = (event) => {
     event.preventDefault()

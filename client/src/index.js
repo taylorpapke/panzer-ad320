@@ -25,6 +25,7 @@ ReactDOM.render(
           <Route path="/register" element={<Register />} />
           <Route path="/app" element={<Protected><App /></Protected>} />
           <Route path="/create" element={<Protected><CreateFlashcard /></Protected>} />
+          <Route path="/user" element={<Protected>User</Protected>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
