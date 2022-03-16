@@ -30,10 +30,18 @@ const AuthProvider = ({ children }) => {
     const register = (email, password, callback) => { 
         // Assignment: how do we register someone?
         try {
-            const registerResponse = axios.post()
-            const something = registerResponse.
+            const registerResponse = axios.post(
+                'http://localhost:8000/auth/register',
+                { email: email, password: password }, 
+                { 'content-type': 'application/json' }
+            )
+            const something = registerResponse.data.token
+            setAuth({ token: registerResponse.data.token, user: something.user })
             callback()
-        }  catch (err) { 
+        }  catch (err) {
+            console.log(`register error ${err}`)
+            alert('register failed. Try again.')
+            callback() 
         }
     }
 
