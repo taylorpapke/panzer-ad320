@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import jwt from 'jwt-decode'
-import { getAutoHeightDuration } from '@mui/material/styles/createTransitions'
 
 const AuthContext = React.createContext(null)
 
 const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null)
 
-    const login = async (email, password, callback) => { 
+    const login = (email, password, callback) => { 
         console.log("[Login]")
         try{
             const authResponse = axios.post(
@@ -18,6 +17,7 @@ const AuthProvider = ({ children }) => {
             )
             const decoded = jwt(authResponse.data.token)
             setAuth({ token: authResponse.data.token, user: decoded.user })
+
             callback()
         } catch (err) {
             console.log(`Login error ${err}`)
@@ -35,13 +35,14 @@ const AuthProvider = ({ children }) => {
                 { email: email, password: password }, 
                 { 'content-type': 'application/json' }
             )
-            const something = registerResponse.data.token
-            setAuth({ token: registerResponse.data.token, user: something.user })
+            //const something = registerResponse.data.token
+            //setAuth({ token: registerResponse.data.token, user: registerResponse.data.token.user })
             callback()
         }  catch (err) {
             console.log(`register error ${err}`)
             alert('register failed. Try again.')
-            callback() 
+            callback()
+            
         }
     }
 
