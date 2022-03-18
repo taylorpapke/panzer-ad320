@@ -10,14 +10,13 @@ const Register = () => {
   let location = useLocation()
 
   const source = location.state?.from?.pathname || "/login" 
-  // Assignment: use the useAuth hook here to handle registering a new user
   const handleSubmit = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
     register(data.get('email'), data.get('password'), () => {
       navigate(source, { replace: true })
     })
-  
+    
     console.log({
       email: data.get('email'),
       password: data.get('password'),
