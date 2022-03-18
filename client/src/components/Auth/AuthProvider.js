@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import jwt from 'jwt-decode'
 
+//1c3b8132-8e08-4e5c-a67a-6c20d944f7ff
+
 const AuthContext = React.createContext(null)
 
 const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null)
 
-    const login = (email, password, callback) => { 
+    const login = async (email, password, callback) => { 
         console.log("[Login]")
         try{
-            const authResponse = axios.post(
+            const authResponse = await axios.post(
                 'http://localhost:8000/auth/login', 
                 { email: email, password: password }, 
                 { 'content-type': 'application/json' }
@@ -22,26 +24,25 @@ const AuthProvider = ({ children }) => {
         } catch (err) {
             console.log(`Login error ${err}`)
             alert('incorrect login. Try again.')
-            callback()
             // Assignment: what should we do if this fails?
         }
     }
 
-    const register = (email, password, callback) => { 
+    const register = async (email, password, callback) => { 
         // Assignment: how do we register someone?
         try {
-            const registerResponse = axios.post(
+            const registerResponse = await axios.post(
                 'http://localhost:8000/auth/register',
                 { email: email, password: password }, 
                 { 'content-type': 'application/json' }
             )
-            //const something = registerResponse.data.token
-            //setAuth({ token: registerResponse.data.token, user: registerResponse.data.token.user })
+            const something = registerResponse.data.token
+            console.log("register response", registerResponse.data)
+            setAuth({ token: registerResponse.data.token, user: something.user })
             callback()
         }  catch (err) {
             console.log(`register error ${err}`)
             alert('register failed. Try again.')
-            callback()
             
         }
     }
