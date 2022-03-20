@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
                 { email: email, password: password }, 
                 { 'content-type': 'application/json' }
             )
-            const something = registerResponse.data.token
+            const something = jwt(registerResponse.data.token)
             console.log("register response", registerResponse.data)
             setAuth({ token: registerResponse.data.token, user: something.user})
             callback()
