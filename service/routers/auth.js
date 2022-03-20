@@ -14,12 +14,21 @@ const register = async (req, res) => {
       res.status(400).send('That email is already registered')
     } else {
       const newUser = req.body
-      // We create an encrypted string that represents the password but
-      // is not the same as the password. This may only be decoded
-      // here with these tools
       newUser.password = await bcrypt.hash(req.body.password, 10)
       const savedUser = await User.create(newUser)
+
+      const payload = {
+        user: savedUser._id,
+        role: savedUser.role
+      }
+      const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 86400 })
+      res.status(200).send({
+        expiresIn: 86400,
+        token: token
+      })
+    
       res.status(200).send(savedUser._id)
+
     }
   } catch (err) {
     console.log(`User creation failed: ${err}`)

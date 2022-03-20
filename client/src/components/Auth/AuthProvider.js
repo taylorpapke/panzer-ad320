@@ -17,15 +17,29 @@ const AuthProvider = ({ children }) => {
             )
             const decoded = jwt(authResponse.data.token)
             setAuth({ token: authResponse.data.token, user: decoded.user })
+
             callback()
         } catch (err) {
             console.log(`Login error ${err}`)
-            // Assignment: what should we do if this fails?
+            alert('incorrect login. Try again.')
         }
     }
 
-    const register = (email, password, callback) => { 
-        // Assignment: how do we register someone?  
+    const register = async (email, password, callback) => { 
+        try {
+            const registerResponse = await axios.post(
+                'http://localhost:8000/auth/register',
+                { email: email, password: password }, 
+                { 'content-type': 'application/json' }
+            )
+            const something = jwt(registerResponse.data.token)
+            console.log("register response", registerResponse.data)
+            setAuth({ token: registerResponse.data.token, user: something.user})
+            callback()
+        }  catch (err) {
+            console.log(`register error ${err}`)
+            alert('register failed. Try again.')
+        }
     }
 
     const authCtx = {
